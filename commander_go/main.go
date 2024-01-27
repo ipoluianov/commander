@@ -2,13 +2,13 @@ package main
 
 import "C"
 import (
+	"commander_go/filesystem"
 	"encoding/json"
 	"fmt"
 	"sync"
-	"time"
 )
 
-// go build -o mylib.dll -buildmode=c-shared
+// go build -o mylib.dylib -buildmode=c-shared
 
 type Transaction struct {
 	Id      int64
@@ -27,24 +27,29 @@ func init() {
 	nextTransactionId = 1
 }
 
-func Add(a, b int64) int64 {
-	fmt.Println("ADD:", a, b)
-	time.Sleep(5 * time.Second)
-	return a + b
-}
-
 func exec(tr *Transaction) {
 	type Func struct {
 		FuncName string `json:"f"`
-		A        int64  `json:"a"`
-		B        int64  `json:"b"`
 	}
 	var a Func
 	json.Unmarshal(tr.Input, &a)
-	if a.FuncName == "calc" {
-		res := Add(a.A, a.B)
-		tr.Output = append(tr.Output, []byte(fmt.Sprint(res))...)
-		tr.Ready = true
+	if a.FuncName == "filesystem_dirs" {
+		res, err := filesystem.Dirs(tr.Input)
+		if err != nil {
+			fmt.Println("Go Error:", err)
+			type Error struct {
+				Error string `json:"err"`
+			}
+			var e Error
+			e.Error = err.Error()
+			bsError, _ := json.MarshalIndent(e, "", " ")
+			tr.Output = append(tr.Output, bsError...)
+			tr.Ready = true
+		} else {
+			fmt.Println("Go Success:", string(res))
+			tr.Output = append(tr.Output, res...)
+			tr.Ready = true
+		}
 	}
 }
 

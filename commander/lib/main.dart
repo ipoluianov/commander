@@ -1,69 +1,14 @@
 import 'dart:ffi';
 
-import 'package:ffi/ffi.dart';
+import 'package:commander/mainform/mainform.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:convert';
 
-typedef BeginFunc = Int64 Function();
-typedef Beginf = int Function();
-
-typedef IsReadyFunc = Int64 Function(Int64 trId);
-typedef IsReadyf = int Function(int trId);
-
-typedef CommitFunc = Int64 Function(Int64 trId);
-typedef Commitf = int Function(int trId);
-
-typedef InFunc = Int64 Function(Int64 trId, Int64 data);
-typedef Inf = int Function(int trId, int data);
-
-typedef OutFunc = Int64 Function(Int64 trId);
-typedef Outf = int Function(int trId);
-
-Future<String> call(String param) async {
-  final dll = DynamicLibrary.open('mylib.dll');
-  final Beginf begin =
-      dll.lookup<NativeFunction<BeginFunc>>('Begin').asFunction();
-  final IsReadyf isReady =
-      dll.lookup<NativeFunction<IsReadyFunc>>('IsReady').asFunction();
-  final Commitf commit =
-      dll.lookup<NativeFunction<CommitFunc>>('Commit').asFunction();
-  final Inf input = dll.lookup<NativeFunction<InFunc>>('In').asFunction();
-  final Outf output = dll.lookup<NativeFunction<OutFunc>>('Out').asFunction();
-
-  int trId = begin();
-  print("FL: BEGIN: $trId");
-
-  List<int> bytesToSend = utf8.encode(param);
-  for (var b in bytesToSend) {
-    input(trId, b);
-  }
-  input(trId, 0xFFFFFFFF);
-  while (true) {
-    var r = isReady(trId);
-    if (r != 0) {
-      break;
-    }
-    await Future.delayed(const Duration(milliseconds: 100));
-  }
-
-  List<int> resultBytes = [];
-
-  while (true) {
-    var b = output(trId);
-    if (b == 0xFFFFFFFF) {
-      break;
-    }
-    resultBytes.add(b);
-  }
-
-  return utf8.decode(resultBytes);
-}
+import 'appstate/state_app.dart';
+import 'go/go.dart';
 
 void main() {
-  //print(call('{"f":"calc", "a": 42, "b" : 123123}'));
-  //print(call('{"f":"calc", "a": 42, "b" : 123123}'));
-
   runApp(const MyApp());
 }
 
@@ -74,20 +19,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Commander',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
+        brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MainForm(),
     );
   }
 }
@@ -112,10 +50,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  String _result = "";
+  dynamic _result;
 
   void _incrementCounter() {
-    call('{"f":"calc", "a": 1000000, "b" : $_counter}').then(
+    callGo('{"f":"filesystem_dirs", "path":"/Users/rb/Documents"}').then(
       (value) {
         setState(() {
           _result = value;
