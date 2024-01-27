@@ -4,18 +4,14 @@ import 'package:flutter/services.dart';
 class StateApp {
   List<StateFilePanel> filepanels = [];
   int currentFilePanel = 0;
-  //int stateId = 0;
 
   static final StateApp _instance = StateApp._internal();
 
-  // Фабричный конструктор, возвращающий _instance
   factory StateApp() {
     return _instance;
   }
 
-  // Приватный конструктор, используемый только внутри класса
   StateApp._internal() {
-    // Инициализация
     filepanels.add(StateFilePanel());
     filepanels.add(StateFilePanel());
   }

@@ -24,7 +24,7 @@ class FilePanelState extends State<FilePanel> {
     super.initState();
     state = StateApp().filepanels[widget.panelIndex];
     Timer.run(() {
-      state.load();
+      state.load(0);
     });
   }
 
@@ -40,6 +40,7 @@ class FilePanelState extends State<FilePanel> {
       index: index,
       fileName: item.fileName,
       selected: selected,
+      isDir: item.isDir,
       onTap: (index) {
         setState(() {
           StateApp().processFilePanelItem(widget.panelIndex, index);
@@ -60,9 +61,12 @@ class FilePanelState extends State<FilePanel> {
 
   @override
   Widget build(BuildContext context) {
-    print("Build Panel ${widget.panelIndex}");
-    return ListView(
-      children: buildItems(context),
+    return Container(
+      decoration:
+          BoxDecoration(border: Border.all(color: Colors.white30, width: 1)),
+      child: ListView(
+        children: buildItems(context),
+      ),
     );
   }
 }
