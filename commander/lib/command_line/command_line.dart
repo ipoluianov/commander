@@ -16,9 +16,15 @@ class CommandLineState extends State<CommandLine> {
   @override
   void initState() {
     super.initState();
-    controller.text = "123121729846238764287648764826486284623986482936487";
+    controller.text = "";
     StateApp().onCommandLineActivate = () {
       focusNode.requestFocus();
+    };
+
+    StateApp().onRequestClearCommandLine = () {
+      setState(() {
+        controller.text = "";
+      });
     };
 
     focusNode.addListener(() {

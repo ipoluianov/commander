@@ -57,6 +57,7 @@ class MainFormState extends State<MainForm> {
         if (StateApp().commandLineActivated) {
           if (event.logicalKey == LogicalKeyboardKey.escape) {
             focusNode.requestFocus();
+            StateApp().requestClearCommandLine();
             return KeyEventResult.handled;
           }
           Set<LogicalKeyboardKey> notAllowedForCommandLine = {};

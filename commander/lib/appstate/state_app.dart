@@ -20,6 +20,7 @@ class StateApp {
   Function onUpdate = () {};
   Function onCommandLineActivate = () {};
   Function onRequestDefaultFocus = () {};
+  Function onRequestClearCommandLine = () {};
 
   void notifyChanges() {
     onUpdate();
@@ -34,6 +35,10 @@ class StateApp {
     print("Execute: $cmd");
     requestDefaultFocus();
     notifyChanges();
+  }
+
+  void requestClearCommandLine() {
+    onRequestClearCommandLine();
   }
 
   void processKeyDown(RawKeyDownEvent event) {
