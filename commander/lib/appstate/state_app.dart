@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 class StateApp {
   List<StateFilePanel> filepanels = [];
   int currentFilePanel = 0;
+  bool commandLineActivated = false;
 
   static final StateApp _instance = StateApp._internal();
 
@@ -17,9 +18,22 @@ class StateApp {
   }
 
   Function onUpdate = () {};
+  Function onCommandLineActivate = () {};
+  Function onRequestDefaultFocus = () {};
 
   void notifyChanges() {
     onUpdate();
+  }
+
+  void requestDefaultFocus() {
+    onRequestDefaultFocus();
+  }
+
+  void executeCommandLine(String cmd) {
+    commandLineActivated = false;
+    print("Execute: $cmd");
+    requestDefaultFocus();
+    notifyChanges();
   }
 
   void processKeyDown(RawKeyDownEvent event) {
@@ -42,10 +56,15 @@ class StateApp {
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.enter) {
-      filepanels[currentFilePanel].mainAction();
+      if (!commandLineActivated) {
+        filepanels[currentFilePanel].mainAction();
+      }
     }
     if (event.logicalKey == LogicalKeyboardKey.backspace) {
       filepanels[currentFilePanel].goBack();
+    }
+    if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      onCommandLineActivate();
     }
     notifyChanges();
   }

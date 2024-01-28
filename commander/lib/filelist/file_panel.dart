@@ -30,7 +30,7 @@ class FilePanelState extends State<FilePanel> {
 
   Widget buildItem(BuildContext context, int index, dynamic item) {
     bool selected = false;
-    print("CFP: ${StateApp().currentFilePanel} ${widget.panelIndex}");
+    //print("CFP: ${StateApp().currentFilePanel} ${widget.panelIndex}");
     if (StateApp().currentFilePanel == widget.panelIndex) {
       if (index == state.currentIndex) {
         selected = true;
