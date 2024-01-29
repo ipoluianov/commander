@@ -6,12 +6,14 @@ class FilelistItem extends StatefulWidget {
   bool selected;
   int index;
   Function(int index) onTap;
+  Function(int index) onDoubleTap;
 
   FilelistItem({
     super.key,
     required this.item,
     required this.selected,
     required this.onTap,
+    required this.onDoubleTap,
     required this.index,
   });
   @override
@@ -56,109 +58,117 @@ class FilelistItemState extends State<FilelistItem> {
       color = Colors.green;
     }
 
-    return GestureDetector(
-      onTap: () {
+    return Listener(
+      onPointerDown: (event) {
         widget.onTap(widget.index);
       },
-      child: Container(
-        padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(
-          color: widget.selected ? Colors.white24 : Colors.transparent,
-          border:
-              const Border(bottom: BorderSide(color: Colors.white30, width: 1)),
-        ),
-        child: DefaultTextStyle(
-          style: const TextStyle(
-            fontFamily: 'RobotoMono',
-            fontSize: 18,
+      child: GestureDetector(
+        /*onTap: () {
+          widget.onTap(widget.index);
+        },*/
+        onDoubleTapDown: (details) {
+          widget.onDoubleTap(widget.index);
+        },
+        child: Container(
+          padding: const EdgeInsets.all(3),
+          decoration: BoxDecoration(
+            color: widget.selected ? Colors.white24 : Colors.transparent,
+            border: const Border(
+                bottom: BorderSide(color: Colors.white30, width: 1)),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    color: color,
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(left: 10),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    left: BorderSide(color: Colors.white30, width: 1),
-                  ),
-                ),
-                child: SizedBox(
-                  width: 50,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        ext,
-                        style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                decoration: const BoxDecoration(
-                  border: Border(
-                    left: BorderSide(
-                      color: Colors.white30,
+          child: DefaultTextStyle(
+            style: const TextStyle(
+              fontFamily: 'RobotoMono',
+              fontSize: 18,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                      color: color,
                     ),
                   ),
                 ),
-                child: SizedBox(
-                  width: 100,
+                Container(
+                  padding: const EdgeInsets.only(left: 10),
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      left: BorderSide(color: Colors.white30, width: 1),
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: 50,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          ext,
+                          style: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      left: BorderSide(
+                        color: Colors.white30,
+                      ),
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: 100,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          sizeString,
+                          style: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 10,
+                          ),
+                        ),
+                        Text(
+                          widget.item.linkTarget,
+                          style: const TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 120,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        sizeString,
+                        "",
                         style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
                           fontSize: 10,
+                          overflow: TextOverflow.ellipsis,
+                          color: Colors.white30,
                         ),
                       ),
                       Text(
-                        widget.item.linkTarget,
-                        style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
+                        permissionsString,
+                        style: TextStyle(
                           fontSize: 10,
+                          color: Colors.white30,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 120,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      owner,
-                      style: const TextStyle(
-                        fontSize: 10,
-                        overflow: TextOverflow.ellipsis,
-                        color: Colors.white30,
-                      ),
-                    ),
-                    Text(
-                      permissionsString,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.white30,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

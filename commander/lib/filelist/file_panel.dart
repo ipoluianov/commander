@@ -79,6 +79,12 @@ class FilePanelState extends State<FilePanel> {
             StateApp().processFilePanelItem(widget.panelIndex, index);
           });
         },
+        onDoubleTap: (index) {
+          setState(() {
+            StateApp().processFilePanelItem(widget.panelIndex, index);
+            state.mainAction();
+          });
+        },
       ),
     );
   }
@@ -96,13 +102,18 @@ class FilePanelState extends State<FilePanel> {
   @override
   Widget build(BuildContext context) {
     heightOfEachItem = 36;
-    return Container(
-      decoration:
-          BoxDecoration(border: Border.all(color: Colors.white30, width: 1)),
-      child: ListView(
-        controller: _scrollController,
-        children: buildItems(context),
-      ),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        state.itemsPerPage = (constraints.maxHeight / heightOfEachItem).round();
+        return Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.white30, width: 1)),
+          child: ListView(
+            controller: _scrollController,
+            children: buildItems(context),
+          ),
+        );
+      },
     );
   }
 }

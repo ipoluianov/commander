@@ -21,6 +21,12 @@ class CommandLineState extends State<CommandLine> {
       focusNode.requestFocus();
     };
 
+    StateApp().onCommandLineAppend = (String txt) {
+      setState(() {
+        controller.text += txt;
+      });
+    };
+
     StateApp().onRequestClearCommandLine = () {
       setState(() {
         controller.text = "";

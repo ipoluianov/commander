@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"os/user"
 	"strings"
-	"syscall"
 )
 
 func Dirs(pb []byte) ([]byte, error) {
@@ -55,14 +53,7 @@ func Dirs(pb []byte) ([]byte, error) {
 				item.Size = lsinfo.Size()
 			}
 
-			fileInfo, err := os.Stat(fullPath)
-			if err == nil {
-				uid := fileInfo.Sys().(*syscall.Stat_t).Uid
-				u, err := user.LookupId(fmt.Sprint(uid))
-				if err == nil {
-					item.Owner = u.Name
-				}
-			}
+			item.Owner = getFileOwner(fullPath)
 
 			if lsinfo.Mode()&os.ModeSymlink != 0 {
 				item.IsLink = true

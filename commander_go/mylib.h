@@ -74,11 +74,11 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-extern GoInt64 Begin();
-extern GoInt64 Commit(GoInt64 tId);
-extern GoInt64 IsReady(GoInt64 tId);
-extern GoUint64 In(GoInt64 tId, GoInt64 a);
-extern GoInt64 Out(GoInt64 tId);
+extern __declspec(dllexport) GoInt64 Begin();
+extern __declspec(dllexport) GoInt64 Commit(GoInt64 tId);
+extern __declspec(dllexport) GoInt64 IsReady(GoInt64 tId);
+extern __declspec(dllexport) GoUint64 In(GoInt64 tId, GoInt64 a);
+extern __declspec(dllexport) GoInt64 Out(GoInt64 tId);
 
 #ifdef __cplusplus
 }

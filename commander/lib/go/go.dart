@@ -52,7 +52,7 @@ Future<dynamic> callGo(String param) async {
     if (r != 0) {
       break;
     }
-    await Future.delayed(const Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 1));
   }
 
   List<int> resultBytes = [];

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:commander/appstate/state_app.dart';
 import 'package:commander/appstate/state_filepanel_item.dart';
 
@@ -8,6 +10,7 @@ class StateFilePanel {
   List<PathPart> currentPath = [];
   List<StateFilePanelItem> items = [];
   List<int> savedCursorPositions = [];
+  int itemsPerPage = 10;
 
   Function(int index) onCurrentIndexChanged = (int index) {};
 
@@ -18,12 +21,21 @@ class StateFilePanel {
 
   String currentPathString() {
     String result = "";
-    for (var part in currentPath) {
-      result += "/";
-      result += part.name;
+    if (Platform.isMacOS) {
+      for (var part in currentPath) {
+        result += "/";
+        result += part.name;
+      }
+      if (result.isEmpty) {
+        result = "/";
+      }
     }
-    if (result.isEmpty) {
-      result = "/";
+    if (Platform.isWindows) {
+      result = "C:";
+      for (var part in currentPath) {
+        result += "/";
+        result += part.name;
+      }
     }
     return result;
   }
@@ -72,6 +84,65 @@ class StateFilePanel {
     }
     setCurrentIndex(selectIndex);
     StateApp().notifyChanges();
+  }
+
+  void keyHome() {
+    setCurrentIndex(0);
+    StateApp().notifyChanges();
+  }
+
+  void keyEnd() {
+    setCurrentIndex(items.length - 1);
+    StateApp().notifyChanges();
+  }
+
+  void keyPageUp() {
+    int newIndex = currentIndex;
+    newIndex -= itemsPerPage;
+    if (newIndex < 0) {
+      newIndex = 0;
+    }
+    if (newIndex >= items.length) {
+      newIndex = items.length - 1;
+    }
+    setCurrentIndex(newIndex);
+    StateApp().notifyChanges();
+  }
+
+  void keyPageDown() {
+    int newIndex = currentIndex;
+    newIndex += itemsPerPage;
+    if (newIndex < 0) {
+      newIndex = 0;
+    }
+    if (newIndex >= items.length) {
+      newIndex = items.length - 1;
+    }
+    setCurrentIndex(newIndex);
+    StateApp().notifyChanges();
+  }
+
+  String selectedFileName() {
+    if (currentIndex < 0 || currentIndex >= items.length) {
+      return "";
+    }
+    String fileName = items[currentIndex].fileName;
+    return fileName;
+  }
+
+  StateFilePanelItem currentItem() {
+    if (currentIndex < 0 || currentIndex >= items.length) {
+      return StateFilePanelItem();
+    }
+    return items[currentIndex];
+  }
+
+  String selectedFileNameWithPath() {
+    String fileName = items[currentIndex].fileName;
+    if (Platform.isMacOS || Platform.isLinux) {
+      return "${currentPathString()}/$fileName";
+    }
+    return "${currentPathString()}/$fileName";
   }
 
   void mainAction() {

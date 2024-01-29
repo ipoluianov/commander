@@ -21,6 +21,7 @@ class StateApp {
   Function onCommandLineActivate = () {};
   Function onRequestDefaultFocus = () {};
   Function onRequestClearCommandLine = () {};
+  Function onCommandLineAppend = (String txt) {};
 
   void notifyChanges() {
     onUpdate();
@@ -62,18 +63,67 @@ class StateApp {
         currentFilePanel = 0;
       }
     }
-    if (event.logicalKey == LogicalKeyboardKey.enter) {
+
+    if (event.logicalKey == LogicalKeyboardKey.enter &&
+        !event.isAltPressed &&
+        !event.isShiftPressed &&
+        !event.isControlPressed) {
       if (!commandLineActivated) {
         filepanels[currentFilePanel].mainAction();
       }
     }
+
+    if (event.logicalKey == LogicalKeyboardKey.enter &&
+        !event.isAltPressed &&
+        event.isShiftPressed &&
+        event.isControlPressed) {
+      if (!commandLineActivated) {
+        String txt = filepanels[currentFilePanel].selectedFileNameWithPath();
+        appendToCommandLine(txt);
+      }
+    }
+
+    if (event.logicalKey == LogicalKeyboardKey.enter &&
+        !event.isAltPressed &&
+        !event.isShiftPressed &&
+        event.isControlPressed) {
+      if (!commandLineActivated) {
+        String txt = filepanels[currentFilePanel].selectedFileName();
+        appendToCommandLine(txt);
+      }
+    }
+
     if (event.logicalKey == LogicalKeyboardKey.backspace) {
-      filepanels[currentFilePanel].goBack();
+      if (!commandLineActivated) {
+        filepanels[currentFilePanel].goBack();
+      }
     }
     if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-      onCommandLineActivate();
+      if (!commandLineActivated) {
+        onCommandLineActivate();
+      }
+    }
+    if (event.logicalKey == LogicalKeyboardKey.home) {
+      if (!commandLineActivated) {
+        filepanels[currentFilePanel].keyHome();
+      }
+    }
+    if (event.logicalKey == LogicalKeyboardKey.end) {
+      if (!commandLineActivated) {
+        filepanels[currentFilePanel].keyEnd();
+      }
+    }
+    if (event.logicalKey == LogicalKeyboardKey.pageUp) {
+      filepanels[currentFilePanel].keyPageUp();
+    }
+    if (event.logicalKey == LogicalKeyboardKey.pageDown) {
+      filepanels[currentFilePanel].keyPageDown();
     }
     notifyChanges();
+  }
+
+  void appendToCommandLine(String txt) {
+    onCommandLineAppend("$txt ");
   }
 
   void setCurrentPanelIndex(int panelIndex) {

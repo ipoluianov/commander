@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:commander/file_info_block/file_info_block.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -77,13 +78,33 @@ class MainFormState extends State<MainForm> {
             child: Row(
               children: [
                 Expanded(
-                  child: FilePanel(
-                    panelIndex: 0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: FilePanel(
+                          panelIndex: 0,
+                        ),
+                      ),
+                      FileInfoBlock(
+                        panelIndex: 0,
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
-                  child: FilePanel(
-                    panelIndex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: FilePanel(
+                          panelIndex: 1,
+                        ),
+                      ),
+                      FileInfoBlock(
+                        panelIndex: 1,
+                      ),
+                    ],
                   ),
                 ),
               ],
