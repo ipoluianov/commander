@@ -44,16 +44,37 @@ class CommandLineState extends State<CommandLine> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      //color: Colors.blue,
-      child: TextField(
-        focusNode: focusNode,
-        controller: controller,
-        onSubmitted: (value) {
-          StateApp().executeCommandLine(controller.text);
-          setState(() {
-            controller.text = "";
-          });
-        },
+      padding: const EdgeInsets.all(10),
+      height: 50,
+      child: Row(
+        children: [
+          Text("CMD: "),
+          Expanded(
+            child: TextField(
+              style: const TextStyle(
+                  fontSize: 14.0,
+                  fontFamily: 'RobotoMono' // Установка размера шрифта
+                  ),
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.only(left: 10),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.white30, // Цвет границы
+                    width: 1.0, // Толщина границы
+                  ),
+                ),
+              ),
+              focusNode: focusNode,
+              controller: controller,
+              onSubmitted: (value) {
+                StateApp().executeCommandLine(controller.text);
+                setState(() {
+                  controller.text = "";
+                });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

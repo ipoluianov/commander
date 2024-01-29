@@ -44,13 +44,15 @@ class StateApp {
   void processKeyDown(RawKeyDownEvent event) {
     if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
       if (filepanels[currentFilePanel].currentIndex > 0) {
-        filepanels[currentFilePanel].currentIndex--;
+        filepanels[currentFilePanel]
+            .setCurrentIndex(filepanels[currentFilePanel].currentIndex - 1);
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
       if (filepanels[currentFilePanel].currentIndex <
           filepanels[currentFilePanel].items.length - 1) {
-        filepanels[currentFilePanel].currentIndex++;
+        filepanels[currentFilePanel]
+            .setCurrentIndex(filepanels[currentFilePanel].currentIndex + 1);
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.tab) {
@@ -81,7 +83,7 @@ class StateApp {
 
   void processFilePanelItem(int panelIndex, int index) {
     setCurrentPanelIndex(panelIndex);
-    filepanels[panelIndex].currentIndex = index;
+    filepanels[panelIndex].setCurrentIndex(index);
     notifyChanges();
   }
 }

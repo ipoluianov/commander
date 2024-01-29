@@ -9,8 +9,11 @@ class StateFilePanel {
   List<StateFilePanelItem> items = [];
   List<int> savedCursorPositions = [];
 
+  Function(int index) onCurrentIndexChanged = (int index) {};
+
   void setCurrentIndex(int index) {
     currentIndex = index;
+    onCurrentIndexChanged(index);
   }
 
   String currentPathString() {
@@ -44,7 +47,11 @@ class StateFilePanel {
       for (var it in its) {
         StateFilePanelItem item = StateFilePanelItem();
         item.fileName = it['name'];
+        item.permissions = it['permissions'];
         item.isDir = it['is_dir'];
+        item.owner = it['owner'];
+        item.isLink = it['is_link'];
+        item.linkTarget = it['link_target'];
         if (item.isDir) {
           items.add(item);
         }
@@ -53,12 +60,17 @@ class StateFilePanel {
         StateFilePanelItem item = StateFilePanelItem();
         item.fileName = it['name'];
         item.isDir = it['is_dir'];
+        item.size = it['size'];
+        item.permissions = it['permissions'];
+        item.owner = it['owner'];
+        item.isLink = it['is_link'];
+        item.linkTarget = it['link_target'];
         if (!item.isDir) {
           items.add(item);
         }
       }
     }
-    currentIndex = selectIndex;
+    setCurrentIndex(selectIndex);
     StateApp().notifyChanges();
   }
 

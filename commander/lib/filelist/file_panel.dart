@@ -19,6 +19,8 @@ class FilePanel extends StatefulWidget {
 class FilePanelState extends State<FilePanel> {
   late StateFilePanel state;
 
+  ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +28,36 @@ class FilePanelState extends State<FilePanel> {
     Timer.run(() {
       state.load(0);
     });
+    state.onCurrentIndexChanged = (int index) {
+      print("ensure visible");
+      scrollToItem(index);
+    };
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _scrollController.dispose();
+  }
+
+  double heightOfEachItem = 20;
+
+  void scrollToItem(int itemIndex) {
+    final double itemPosition = itemIndex * heightOfEachItem;
+    final double scrollPosition = _scrollController.position.pixels;
+    final double viewportHeight = _scrollController.position.viewportDimension;
+
+    if (itemPosition < scrollPosition) {
+      // Элемент находится выше видимой области, прокрутим вверх
+      _scrollController.jumpTo(itemPosition);
+    } else if ((itemPosition + heightOfEachItem) >
+        (scrollPosition + viewportHeight)) {
+      // Элемент находится ниже видимой области, прокрутим вниз
+      // Прокрутим так, чтобы элемент оказался внизу видимой области
+      _scrollController
+          .jumpTo(itemPosition + heightOfEachItem - viewportHeight);
+    }
   }
 
   Widget buildItem(BuildContext context, int index, dynamic item) {
@@ -36,16 +68,18 @@ class FilePanelState extends State<FilePanel> {
         selected = true;
       }
     }
-    return FilelistItem(
-      index: index,
-      fileName: item.fileName,
-      selected: selected,
-      isDir: item.isDir,
-      onTap: (index) {
-        setState(() {
-          StateApp().processFilePanelItem(widget.panelIndex, index);
-        });
-      },
+    return SizedBox(
+      height: heightOfEachItem,
+      child: FilelistItem(
+        index: index,
+        item: item,
+        selected: selected,
+        onTap: (index) {
+          setState(() {
+            StateApp().processFilePanelItem(widget.panelIndex, index);
+          });
+        },
+      ),
     );
   }
 
@@ -61,10 +95,12 @@ class FilePanelState extends State<FilePanel> {
 
   @override
   Widget build(BuildContext context) {
+    heightOfEachItem = 36;
     return Container(
       decoration:
           BoxDecoration(border: Border.all(color: Colors.white30, width: 1)),
       child: ListView(
+        controller: _scrollController,
         children: buildItems(context),
       ),
     );
