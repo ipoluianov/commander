@@ -122,6 +122,13 @@ class StateFilePanel {
     StateApp().notifyChanges();
   }
 
+  void keyShiftF6() {
+    StateApp().setActivatedWidget(StateApp.widgetRenameFileField);
+    //items[currentIndex].renaming = true;
+    //items[currentIndex].renamingName = items[currentIndex].fileName;
+    StateApp().notifyChanges();
+  }
+
   String selectedFileName() {
     if (currentIndex < 0 || currentIndex >= items.length) {
       return "";

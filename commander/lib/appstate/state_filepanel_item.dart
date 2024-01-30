@@ -1,3 +1,5 @@
+import 'package:commander/appstate/state_app.dart';
+
 class StateFilePanelItem {
   String fileName = "";
   String ext = "";
@@ -7,6 +9,18 @@ class StateFilePanelItem {
   String owner = "";
   bool isLink = false;
   String linkTarget = "";
+  //bool renaming = false;
+  //String renamingName = "";
+
+  Function onRenameFieldActivated = () {};
+  Function onRenameFieldDeActivated = () {};
+
+  void renameCompleted() {
+    //print("RENAME COMPLETED $fileName to $renamingName");
+    //renaming = false;
+    StateApp().setActivatedWidget(StateApp.widgetFilePanel);
+    StateApp().notifyChanges();
+  }
 
   String getFileExtension() {
     if (fileName == "..") {

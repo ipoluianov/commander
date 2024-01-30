@@ -4,7 +4,11 @@ import 'package:flutter/services.dart';
 class StateApp {
   List<StateFilePanel> filepanels = [];
   int currentFilePanel = 0;
-  bool commandLineActivated = false;
+  String _activatedWidget = "";
+
+  static const String widgetFilePanel = "";
+  static const String widgetCommandLine = "COMMAND_LINE";
+  static const String widgetRenameFileField = "RENAME_FILE_FIELD";
 
   static final StateApp _instance = StateApp._internal();
 
@@ -31,8 +35,38 @@ class StateApp {
     onRequestDefaultFocus();
   }
 
+  void setActivatedWidget(String activatedWidget) {
+    if (_activatedWidget == widgetRenameFileField &&
+        activatedWidget != widgetRenameFileField) {
+      filepanels[currentFilePanel].currentItem().onRenameFieldDeActivated();
+    }
+
+    _activatedWidget = activatedWidget;
+    notifyChanges();
+
+    if (isRenameFieldActivated()) {
+      filepanels[currentFilePanel].currentItem().onRenameFieldActivated();
+    }
+  }
+
+  String activatedWidget() {
+    return _activatedWidget;
+  }
+
+  bool isFilePanelActivated() {
+    return _activatedWidget == "";
+  }
+
+  bool isCommandLineActivated() {
+    return _activatedWidget == widgetCommandLine;
+  }
+
+  bool isRenameFieldActivated() {
+    return _activatedWidget == widgetRenameFileField;
+  }
+
   void executeCommandLine(String cmd) {
-    commandLineActivated = false;
+    setActivatedWidget("");
     print("Execute: $cmd");
     requestDefaultFocus();
     notifyChanges();
@@ -68,7 +102,7 @@ class StateApp {
         !event.isAltPressed &&
         !event.isShiftPressed &&
         !event.isControlPressed) {
-      if (!commandLineActivated) {
+      if (isFilePanelActivated()) {
         filepanels[currentFilePanel].mainAction();
       }
     }
@@ -77,7 +111,7 @@ class StateApp {
         !event.isAltPressed &&
         event.isShiftPressed &&
         event.isControlPressed) {
-      if (!commandLineActivated) {
+      if (isFilePanelActivated()) {
         String txt = filepanels[currentFilePanel].selectedFileNameWithPath();
         appendToCommandLine(txt);
       }
@@ -87,29 +121,29 @@ class StateApp {
         !event.isAltPressed &&
         !event.isShiftPressed &&
         event.isControlPressed) {
-      if (!commandLineActivated) {
+      if (isFilePanelActivated()) {
         String txt = filepanels[currentFilePanel].selectedFileName();
         appendToCommandLine(txt);
       }
     }
 
     if (event.logicalKey == LogicalKeyboardKey.backspace) {
-      if (!commandLineActivated) {
+      if (isFilePanelActivated()) {
         filepanels[currentFilePanel].goBack();
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-      if (!commandLineActivated) {
+      if (isFilePanelActivated()) {
         onCommandLineActivate();
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.home) {
-      if (!commandLineActivated) {
+      if (isFilePanelActivated()) {
         filepanels[currentFilePanel].keyHome();
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.end) {
-      if (!commandLineActivated) {
+      if (isFilePanelActivated()) {
         filepanels[currentFilePanel].keyEnd();
       }
     }
@@ -118,6 +152,9 @@ class StateApp {
     }
     if (event.logicalKey == LogicalKeyboardKey.pageDown) {
       filepanels[currentFilePanel].keyPageDown();
+    }
+    if (event.logicalKey == LogicalKeyboardKey.f6 && event.isShiftPressed) {
+      filepanels[currentFilePanel].keyShiftF6();
     }
     notifyChanges();
   }

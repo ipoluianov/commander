@@ -55,7 +55,14 @@ class MainFormState extends State<MainForm> {
     return Focus(
       focusNode: focusNode,
       onKey: (node, event) {
-        if (StateApp().commandLineActivated) {
+        if (StateApp().isRenameFieldActivated()) {
+          if (event.logicalKey == LogicalKeyboardKey.escape) {
+            focusNode.requestFocus();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        }
+        if (StateApp().isCommandLineActivated()) {
           if (event.logicalKey == LogicalKeyboardKey.escape) {
             focusNode.requestFocus();
             StateApp().requestClearCommandLine();

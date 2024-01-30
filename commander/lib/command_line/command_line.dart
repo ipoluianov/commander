@@ -34,7 +34,11 @@ class CommandLineState extends State<CommandLine> {
     };
 
     focusNode.addListener(() {
-      StateApp().commandLineActivated = focusNode.hasFocus;
+      if (focusNode.hasFocus) {
+        StateApp().setActivatedWidget(StateApp.widgetCommandLine);
+      } else {
+        StateApp().setActivatedWidget(StateApp.widgetFilePanel);
+      }
     });
   }
 

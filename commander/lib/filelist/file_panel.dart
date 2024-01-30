@@ -72,6 +72,7 @@ class FilePanelState extends State<FilePanel> {
       height: heightOfEachItem,
       child: FilelistItem(
         index: index,
+        filePanelIndex: widget.panelIndex,
         item: item,
         selected: selected,
         onTap: (index) {

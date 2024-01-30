@@ -1,10 +1,13 @@
 import 'package:commander/appstate/state_filepanel_item.dart';
 import 'package:flutter/material.dart';
 
+import '../appstate/state_app.dart';
+
 class FilelistItem extends StatefulWidget {
   StateFilePanelItem item;
   bool selected;
   int index;
+  int filePanelIndex;
   Function(int index) onTap;
   Function(int index) onDoubleTap;
 
@@ -15,6 +18,7 @@ class FilelistItem extends StatefulWidget {
     required this.onTap,
     required this.onDoubleTap,
     required this.index,
+    required this.filePanelIndex,
   });
   @override
   State<StatefulWidget> createState() {
@@ -23,6 +27,83 @@ class FilelistItem extends StatefulWidget {
 }
 
 class FilelistItemState extends State<FilelistItem> {
+  late StateFilePanelItem state;
+
+  bool editing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    state = widget.item;
+    state.onRenameFieldActivated = () {
+      setState(() {
+        renameController.text = widget.item.fileName;
+        //widget.item.renamingName = widget.item.fileName;
+        editing = true;
+        focusNode.requestFocus();
+        renameController.selection = TextSelection(
+            baseOffset: 0, extentOffset: renameController.text.length);
+      });
+    };
+
+    state.onRenameFieldDeActivated = () {
+      setState(() {
+        editing = false;
+      });
+    };
+
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+      } else {
+        setState(() {
+          editing = false;
+          StateApp().setActivatedWidget(StateApp.widgetFilePanel);
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    focusNode.removeListener(() {});
+    focusNode.dispose();
+
+    super.dispose();
+  }
+
+  TextEditingController renameController = TextEditingController();
+  FocusNode focusNode = FocusNode();
+
+  Widget buildRenameWidget() {
+    return TextField(
+      focusNode: focusNode,
+      controller: renameController,
+      onChanged: (value) {
+        setState(() {
+          //state.renamingName = value;
+        });
+      },
+      onSubmitted: (value) {
+        state.renameCompleted();
+        setState(() {
+          renameController.text = "";
+        });
+      },
+    );
+  }
+
+  Widget buildFileNameWidget(BuildContext context, Color color, String text) {
+    if (editing) {
+      return buildRenameWidget();
+    }
+    return Text(
+      text,
+      style: TextStyle(
+        color: color,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String text = widget.item.getFileNameWithoutExtension();
@@ -84,12 +165,7 @@ class FilelistItemState extends State<FilelistItem> {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    text,
-                    style: TextStyle(
-                      color: color,
-                    ),
-                  ),
+                  child: buildFileNameWidget(context, color, text),
                 ),
                 Container(
                   padding: const EdgeInsets.only(left: 10),
