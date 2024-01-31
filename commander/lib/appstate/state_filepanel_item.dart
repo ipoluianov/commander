@@ -9,8 +9,13 @@ class StateFilePanelItem {
   String owner = "";
   bool isLink = false;
   String linkTarget = "";
+  int panelIndex = 0;
   //bool renaming = false;
   //String renamingName = "";
+
+  String key() {
+    return panelIndex.toString() + fileName;
+  }
 
   Function onRenameFieldActivated = () {};
   Function onRenameFieldDeActivated = () {};

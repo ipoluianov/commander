@@ -71,6 +71,7 @@ class FilePanelState extends State<FilePanel> {
     return SizedBox(
       height: heightOfEachItem,
       child: FilelistItem(
+        key: Key(item.key()),
         index: index,
         filePanelIndex: widget.panelIndex,
         item: item,

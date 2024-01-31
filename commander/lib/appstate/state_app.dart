@@ -18,7 +18,9 @@ class StateApp {
 
   StateApp._internal() {
     filepanels.add(StateFilePanel());
+    filepanels[0].panelIndex = 0;
     filepanels.add(StateFilePanel());
+    filepanels[1].panelIndex = 1;
   }
 
   Function onUpdate = () {};
@@ -37,6 +39,9 @@ class StateApp {
 
   void setActivatedWidget(String activatedWidget) {
     _activatedWidget = activatedWidget;
+    if (activatedWidget == widgetFilePanel) {
+      onRequestDefaultFocus();
+    }
     notifyChanges();
   }
 
@@ -75,11 +80,13 @@ class StateApp {
     onRequestClearCommandLine();
   }
 
-  void processKeyDown(RawKeyDownEvent event) {
+  bool processKeyDown(RawKeyDownEvent event) {
+    bool processed = false;
     if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
       if (filepanels[currentFilePanel].currentIndex > 0) {
         filepanels[currentFilePanel]
             .setCurrentIndex(filepanels[currentFilePanel].currentIndex - 1);
+        processed = true;
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
@@ -87,13 +94,16 @@ class StateApp {
           filepanels[currentFilePanel].items.length - 1) {
         filepanels[currentFilePanel]
             .setCurrentIndex(filepanels[currentFilePanel].currentIndex + 1);
+        processed = true;
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.tab) {
       if (currentFilePanel == 0) {
         currentFilePanel = 1;
+        processed = true;
       } else {
         currentFilePanel = 0;
+        processed = true;
       }
     }
 
@@ -103,6 +113,7 @@ class StateApp {
         !event.isControlPressed) {
       if (isFilePanelActivated()) {
         filepanels[currentFilePanel].mainAction();
+        processed = true;
       }
     }
 
@@ -113,6 +124,7 @@ class StateApp {
       if (isFilePanelActivated()) {
         String txt = filepanels[currentFilePanel].selectedFileNameWithPath();
         appendToCommandLine(txt);
+        processed = true;
       }
     }
 
@@ -123,39 +135,57 @@ class StateApp {
       if (isFilePanelActivated()) {
         String txt = filepanels[currentFilePanel].selectedFileName();
         appendToCommandLine(txt);
+        processed = true;
       }
     }
 
     if (event.logicalKey == LogicalKeyboardKey.backspace) {
       if (isFilePanelActivated()) {
         filepanels[currentFilePanel].goBack();
+        processed = true;
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
       if (isFilePanelActivated()) {
         onCommandLineActivate();
+        processed = true;
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.home) {
       if (isFilePanelActivated()) {
         filepanels[currentFilePanel].keyHome();
+        processed = true;
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.end) {
       if (isFilePanelActivated()) {
         filepanels[currentFilePanel].keyEnd();
+        processed = true;
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.pageUp) {
       filepanels[currentFilePanel].keyPageUp();
+      processed = true;
     }
     if (event.logicalKey == LogicalKeyboardKey.pageDown) {
       filepanels[currentFilePanel].keyPageDown();
+      processed = true;
     }
     if (event.logicalKey == LogicalKeyboardKey.f6 && event.isShiftPressed) {
       filepanels[currentFilePanel].keyShiftF6();
+      processed = true;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.escape) {
+      if (isCommandLineActivated()) {
+        requestDefaultFocus();
+        StateApp().requestClearCommandLine();
+      }
+      if (isRenameFieldActivated()) {
+        requestDefaultFocus();
+      }
     }
     notifyChanges();
+    return processed;
   }
 
   void appendToCommandLine(String txt) {

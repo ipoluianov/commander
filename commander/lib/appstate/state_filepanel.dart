@@ -11,6 +11,7 @@ class StateFilePanel {
   List<StateFilePanelItem> items = [];
   List<int> savedCursorPositions = [];
   int itemsPerPage = 10;
+  int panelIndex = 0;
 
   Function(int index) onCurrentIndexChanged = (int index) {};
 
@@ -64,6 +65,7 @@ class StateFilePanel {
         item.owner = it['owner'];
         item.isLink = it['is_link'];
         item.linkTarget = it['link_target'];
+        item.panelIndex = panelIndex;
         if (item.isDir) {
           items.add(item);
         }
@@ -77,6 +79,7 @@ class StateFilePanel {
         item.owner = it['owner'];
         item.isLink = it['is_link'];
         item.linkTarget = it['link_target'];
+        item.panelIndex = panelIndex;
         if (!item.isDir) {
           items.add(item);
         }

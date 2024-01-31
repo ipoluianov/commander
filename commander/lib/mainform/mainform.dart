@@ -34,10 +34,14 @@ class MainFormState extends State<MainForm> {
     RawKeyboard.instance.addListener(_handleKey);
   }
 
+  bool processedLastKey = false;
+
   void _handleKey(RawKeyEvent event) {
+    //print("_handleKey ${event.logicalKey}");
+
     if (event is RawKeyDownEvent) {
       setState(() {
-        stateApp.processKeyDown(event);
+        processedLastKey = stateApp.processKeyDown(event);
       });
     }
   }
@@ -51,10 +55,14 @@ class MainFormState extends State<MainForm> {
   FocusNode focusNode = FocusNode();
 
   Widget buildContent(BuildContext context) {
-    print("MainForm Build State:");
+    //print("MainForm Build State:");
     return Focus(
       focusNode: focusNode,
       onKey: (node, event) {
+        if (processedLastKey) return KeyEventResult.handled;
+        return KeyEventResult.ignored;
+
+        print("onKey ${event.logicalKey}");
         if (StateApp().isRenameFieldActivated()) {
           if (event.logicalKey == LogicalKeyboardKey.escape) {
             focusNode.requestFocus();
@@ -80,7 +88,6 @@ class MainFormState extends State<MainForm> {
       },
       child: Column(
         children: [
-          OutlinedButton(onPressed: () {}, child: Text("adsda")),
           Expanded(
             child: Row(
               children: [

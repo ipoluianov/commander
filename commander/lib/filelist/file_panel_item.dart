@@ -127,6 +127,8 @@ class FilelistItemState extends State<FilelistItem> {
       owner += "...";
     }
 
+    //text = widget.key.toString();
+
     if (widget.item.fileName == "..") {
       owner = "";
       permissionsString = "";
