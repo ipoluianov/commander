@@ -123,9 +123,8 @@ class StateFilePanel {
   }
 
   void keyShiftF6() {
-    StateApp().setActivatedWidget(StateApp.widgetRenameFileField);
-    //items[currentIndex].renaming = true;
-    //items[currentIndex].renamingName = items[currentIndex].fileName;
+    //StateApp().setActivatedWidget(StateApp.widgetRenameFileField);
+    StateApp().renameFilePanelItem();
     StateApp().notifyChanges();
   }
 

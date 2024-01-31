@@ -37,29 +37,32 @@ class FilelistItemState extends State<FilelistItem> {
     state = widget.item;
     state.onRenameFieldActivated = () {
       setState(() {
-        renameController.text = widget.item.fileName;
-        //widget.item.renamingName = widget.item.fileName;
+        StateApp().setActivatedWidget(StateApp.widgetRenameFileField);
         editing = true;
-        focusNode.requestFocus();
+        renameController.text = widget.item.fileName;
         renameController.selection = TextSelection(
             baseOffset: 0, extentOffset: renameController.text.length);
       });
+      focusNode.requestFocus();
     };
 
     state.onRenameFieldDeActivated = () {
       setState(() {
         editing = false;
       });
+      StateApp().setActivatedWidget(StateApp.widgetFilePanel);
     };
 
     focusNode.addListener(() {
-      if (focusNode.hasFocus) {
-      } else {
-        setState(() {
-          editing = false;
+      setState(() {
+        if (focusNode.hasFocus) {
+          StateApp().setActivatedWidget(StateApp.widgetRenameFileField);
+          editing = true;
+        } else {
           StateApp().setActivatedWidget(StateApp.widgetFilePanel);
-        });
-      }
+          editing = false;
+        }
+      });
     });
   }
 

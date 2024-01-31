@@ -36,17 +36,16 @@ class StateApp {
   }
 
   void setActivatedWidget(String activatedWidget) {
-    if (_activatedWidget == widgetRenameFileField &&
-        activatedWidget != widgetRenameFileField) {
-      filepanels[currentFilePanel].currentItem().onRenameFieldDeActivated();
-    }
-
     _activatedWidget = activatedWidget;
     notifyChanges();
+  }
 
-    if (isRenameFieldActivated()) {
-      filepanels[currentFilePanel].currentItem().onRenameFieldActivated();
-    }
+  void renameFilePanelItem() {
+    filepanels[currentFilePanel].currentItem().onRenameFieldActivated();
+  }
+
+  void renameFilePanelItemCancel() {
+    filepanels[currentFilePanel].currentItem().onRenameFieldDeActivated();
   }
 
   String activatedWidget() {

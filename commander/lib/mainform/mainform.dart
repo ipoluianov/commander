@@ -120,6 +120,7 @@ class MainFormState extends State<MainForm> {
           SizedBox(
             child: CommandLine(),
           ),
+          Text(StateApp().activatedWidget()),
         ],
       ),
     );
