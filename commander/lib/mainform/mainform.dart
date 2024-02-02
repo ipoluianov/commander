@@ -29,7 +29,9 @@ class MainFormState extends State<MainForm> {
       setState(() {});
     };
     StateApp().onRequestDefaultFocus = () {
-      focusNode.requestFocus();
+      Timer.run(() {
+        focusNode.requestFocus();
+      });
     };
     RawKeyboard.instance.addListener(_handleKey);
   }
