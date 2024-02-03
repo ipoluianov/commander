@@ -9,6 +9,8 @@ class StateApp {
   static const String widgetFilePanel = "";
   static const String widgetCommandLine = "COMMAND_LINE";
   static const String widgetRenameFileField = "RENAME_FILE_FIELD";
+  static const String widgetDrives0 = "DRIVES0";
+  static const String widgetDrives1 = "DRIVES1";
 
   static final StateApp _instance = StateApp._internal();
 
@@ -69,6 +71,14 @@ class StateApp {
     return _activatedWidget == widgetRenameFileField;
   }
 
+  bool isDrives0Activated() {
+    return _activatedWidget == widgetDrives0;
+  }
+
+  bool isDrives1Activated() {
+    return _activatedWidget == widgetDrives1;
+  }
+
   void executeCommandLine(String cmd) {
     setActivatedWidget("");
     print("Execute: $cmd");
@@ -83,18 +93,22 @@ class StateApp {
   bool processKeyDown(RawKeyDownEvent event) {
     bool processed = false;
     if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-      if (filepanels[currentFilePanel].currentIndex > 0) {
-        filepanels[currentFilePanel]
-            .setCurrentIndex(filepanels[currentFilePanel].currentIndex - 1);
-        processed = true;
+      if (isFilePanelActivated()) {
+        if (filepanels[currentFilePanel].currentIndex > 0) {
+          filepanels[currentFilePanel]
+              .setCurrentIndex(filepanels[currentFilePanel].currentIndex - 1);
+          processed = true;
+        }
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-      if (filepanels[currentFilePanel].currentIndex <
-          filepanels[currentFilePanel].items.length - 1) {
-        filepanels[currentFilePanel]
-            .setCurrentIndex(filepanels[currentFilePanel].currentIndex + 1);
-        processed = true;
+      if (isFilePanelActivated()) {
+        if (filepanels[currentFilePanel].currentIndex <
+            filepanels[currentFilePanel].items.length - 1) {
+          filepanels[currentFilePanel]
+              .setCurrentIndex(filepanels[currentFilePanel].currentIndex + 1);
+          processed = true;
+        }
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.tab) {
@@ -164,28 +178,80 @@ class StateApp {
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.pageUp) {
-      filepanels[currentFilePanel].keyPageUp();
-      processed = true;
+      if (isFilePanelActivated()) {
+        filepanels[currentFilePanel].keyPageUp();
+        processed = true;
+      }
     }
     if (event.logicalKey == LogicalKeyboardKey.pageDown) {
-      filepanels[currentFilePanel].keyPageDown();
-      processed = true;
+      if (isFilePanelActivated()) {
+        filepanels[currentFilePanel].keyPageDown();
+        processed = true;
+      }
     }
     if (event.logicalKey == LogicalKeyboardKey.f6 && event.isShiftPressed) {
-      filepanels[currentFilePanel].keyShiftF6();
-      processed = true;
+      if (isFilePanelActivated()) {
+        filepanels[currentFilePanel].keyShiftF6();
+        processed = true;
+      }
+    }
+    if (event.logicalKey == LogicalKeyboardKey.f1 && event.isAltPressed) {
+      if (isFilePanelActivated() ||
+          isDrives0Activated() ||
+          isDrives1Activated()) {
+        if (isDrives1Activated()) {
+          hideDrives1();
+        }
+        filepanels[0].keyShowDrives();
+        setActivatedWidget(widgetDrives0);
+        processed = true;
+      }
+    }
+    if (event.logicalKey == LogicalKeyboardKey.f2 && event.isAltPressed) {
+      if (isDrives0Activated() ||
+          isDrives0Activated() ||
+          isDrives1Activated()) {
+        hideDrives0();
+      }
+      if (isFilePanelActivated()) {
+        filepanels[1].keyShowDrives();
+        setActivatedWidget(widgetDrives1);
+        processed = true;
+      }
     }
     if (event.logicalKey == LogicalKeyboardKey.escape) {
       if (isCommandLineActivated()) {
         requestDefaultFocus();
         StateApp().requestClearCommandLine();
+        processed = true;
       }
       if (isRenameFieldActivated()) {
         requestDefaultFocus();
+        processed = true;
+      }
+      if (isDrives0Activated()) {
+        hideDrives0();
+        processed = true;
+      }
+      if (isDrives1Activated()) {
+        hideDrives1();
+        processed = true;
       }
     }
     notifyChanges();
     return processed;
+  }
+
+  void hideDrives0() {
+    filepanels[0].keyHideDrives();
+    setActivatedWidget(widgetFilePanel);
+    requestDefaultFocus();
+  }
+
+  void hideDrives1() {
+    filepanels[1].keyHideDrives();
+    setActivatedWidget(widgetFilePanel);
+    requestDefaultFocus();
   }
 
   void appendToCommandLine(String txt) {

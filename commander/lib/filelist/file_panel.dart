@@ -4,6 +4,7 @@ import 'package:commander/appstate/state_filepanel.dart';
 import 'package:flutter/material.dart';
 
 import '../appstate/state_app.dart';
+import '../drives/drives.dart';
 import 'file_panel_item.dart';
 
 class FilePanel extends StatefulWidget {
@@ -21,6 +22,8 @@ class FilePanelState extends State<FilePanel> {
 
   ScrollController _scrollController = ScrollController();
 
+  bool _showDrives = false;
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +34,16 @@ class FilePanelState extends State<FilePanel> {
     state.onCurrentIndexChanged = (int index) {
       print("ensure visible");
       scrollToItem(index);
+    };
+    state.onRequestShowDrives = () {
+      setState(() {
+        _showDrives = true;
+      });
+    };
+    state.onRequestHideDrives = () {
+      setState(() {
+        _showDrives = false;
+      });
     };
   }
 
@@ -101,9 +114,28 @@ class FilePanelState extends State<FilePanel> {
     return res;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    heightOfEachItem = 36;
+  Widget buildDrives(BuildContext context) {
+    if (!_showDrives) {
+      return Container();
+    }
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        state.itemsPerPage = (constraints.maxHeight / heightOfEachItem).round();
+        return Center(
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white30, width: 1),
+              color: Colors.black45,
+            ),
+            child: Drives(
+                width: constraints.maxWidth, height: constraints.maxHeight),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildFileList(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         state.itemsPerPage = (constraints.maxHeight / heightOfEachItem).round();
@@ -116,6 +148,17 @@ class FilePanelState extends State<FilePanel> {
           ),
         );
       },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    heightOfEachItem = 36;
+    return Stack(
+      children: [
+        buildFileList(context),
+        buildDrives(context),
+      ],
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:commander/appstate/state_filepanel_item.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +45,9 @@ class FilelistItemState extends State<FilelistItem> {
         renameController.selection = TextSelection(
             baseOffset: 0, extentOffset: renameController.text.length);
       });
-      focusNode.requestFocus();
+      Timer.run(() {
+        focusNode.requestFocus();
+      });
     };
 
     state.onRenameFieldDeActivated = () {
@@ -81,6 +85,26 @@ class FilelistItemState extends State<FilelistItem> {
     return TextField(
       focusNode: focusNode,
       controller: renameController,
+      decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0,
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 0,
+          ),
+        ),
+      ),
       onChanged: (value) {
         setState(() {
           //state.renamingName = value;

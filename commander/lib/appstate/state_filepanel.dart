@@ -14,6 +14,8 @@ class StateFilePanel {
   int panelIndex = 0;
 
   Function(int index) onCurrentIndexChanged = (int index) {};
+  Function() onRequestShowDrives = () {};
+  Function() onRequestHideDrives = () {};
 
   void setCurrentIndex(int index) {
     currentIndex = index;
@@ -129,6 +131,14 @@ class StateFilePanel {
     //StateApp().setActivatedWidget(StateApp.widgetRenameFileField);
     StateApp().renameFilePanelItem();
     StateApp().notifyChanges();
+  }
+
+  void keyShowDrives() {
+    onRequestShowDrives();
+  }
+
+  void keyHideDrives() {
+    onRequestHideDrives();
   }
 
   String selectedFileName() {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../appstate/state_app.dart';
@@ -18,7 +20,9 @@ class CommandLineState extends State<CommandLine> {
     super.initState();
     controller.text = "";
     StateApp().onCommandLineActivate = () {
-      focusNode.requestFocus();
+      Timer.run(() {
+        focusNode.requestFocus();
+      });
     };
 
     StateApp().onCommandLineAppend = (String txt) {
