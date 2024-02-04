@@ -127,4 +127,7 @@ func Out(tId int64) int64 {
 	return result
 }
 
-func main() {}
+func main() {
+	filesystem.Dirs([]byte(`{"path":"/var/db"}`))
+
+}

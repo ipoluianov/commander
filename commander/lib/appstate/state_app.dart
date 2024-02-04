@@ -1,8 +1,10 @@
+import 'package:commander/appstate/state_drives.dart';
 import 'package:commander/appstate/state_filepanel.dart';
 import 'package:flutter/services.dart';
 
 class StateApp {
   List<StateFilePanel> filepanels = [];
+  List<StateDrives> drives = [];
   int currentFilePanel = 0;
   String _activatedWidget = "";
 
@@ -23,6 +25,11 @@ class StateApp {
     filepanels[0].panelIndex = 0;
     filepanels.add(StateFilePanel());
     filepanels[1].panelIndex = 1;
+
+    drives.add(StateDrives());
+    drives[0].panelIndex = 0;
+    drives.add(StateDrives());
+    drives[1].panelIndex = 1;
   }
 
   Function onUpdate = () {};
@@ -208,7 +215,7 @@ class StateApp {
       }
     }
     if (event.logicalKey == LogicalKeyboardKey.f2 && event.isAltPressed) {
-      if (isDrives0Activated() ||
+      if (isFilePanelActivated() ||
           isDrives0Activated() ||
           isDrives1Activated()) {
         hideDrives0();

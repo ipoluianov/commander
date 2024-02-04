@@ -51,32 +51,33 @@ func Dirs(pb []byte) ([]byte, error) {
 			if err == nil {
 				item.Permissions = uint32(lsinfo.Mode())
 				item.Size = lsinfo.Size()
-			}
 
-			item.Owner = getFileOwner(fullPath)
+				item.Owner = getFileOwner(fullPath)
+				fmt.Println(fullPath, lsinfo)
 
-			if lsinfo.Mode()&os.ModeSymlink != 0 {
-				item.IsLink = true
-				fmt.Println("link detected: ", fullPath)
-				resolvedPath, err := os.Readlink(fullPath)
-				if !strings.HasPrefix(resolvedPath, "/") {
-					resolvedPath = "/" + resolvedPath
-				}
-				item.LinkTarget = resolvedPath
-				if err == nil {
-					fmt.Println("link path: ", resolvedPath)
-					resolvedFileInfo, err := os.Stat(resolvedPath)
+				if lsinfo.Mode()&os.ModeSymlink != 0 {
+					item.IsLink = true
+					fmt.Println("link detected: ", fullPath)
+					resolvedPath, err := os.Readlink(fullPath)
+					if !strings.HasPrefix(resolvedPath, "/") {
+						resolvedPath = "/" + resolvedPath
+					}
+					item.LinkTarget = resolvedPath
 					if err == nil {
-						fmt.Println("link resolve result:", resolvedFileInfo)
-						if resolvedFileInfo.IsDir() {
-							fmt.Println("link resolve result (ISDIR):", resolvedFileInfo)
-							item.IsDir = true
+						fmt.Println("link path: ", resolvedPath)
+						resolvedFileInfo, err := os.Stat(resolvedPath)
+						if err == nil {
+							fmt.Println("link resolve result:", resolvedFileInfo)
+							if resolvedFileInfo.IsDir() {
+								fmt.Println("link resolve result (ISDIR):", resolvedFileInfo)
+								item.IsDir = true
+							}
+						} else {
+							fmt.Println("link resolve error", err)
 						}
 					} else {
-						fmt.Println("link resolve error", err)
+						fmt.Println("link path error", err)
 					}
-				} else {
-					fmt.Println("link path error", err)
 				}
 			}
 

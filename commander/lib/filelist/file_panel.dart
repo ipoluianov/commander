@@ -128,7 +128,10 @@ class FilePanelState extends State<FilePanel> {
               color: Colors.black45,
             ),
             child: Drives(
-                width: constraints.maxWidth, height: constraints.maxHeight),
+              panelIndex: widget.panelIndex,
+              width: constraints.maxWidth,
+              height: constraints.maxHeight,
+            ),
           ),
         );
       },
