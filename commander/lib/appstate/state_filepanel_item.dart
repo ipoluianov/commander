@@ -10,6 +10,7 @@ class StateFilePanelItem {
   bool isLink = false;
   String linkTarget = "";
   int panelIndex = 0;
+  DateTime modTime = DateTime(0);
   //bool renaming = false;
   //String renamingName = "";
 

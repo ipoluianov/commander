@@ -138,7 +138,13 @@ class MainFormState extends State<MainForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: buildContent(context),
+      body: Container(
+        color: Colors.black,
+        child: Container(
+          color: Colors.white12,
+          child: buildContent(context),
+        ),
+      ),
     );
   }
 }

@@ -27,6 +27,7 @@ func Dirs(pb []byte) ([]byte, error) {
 		Owner       string `json:"owner"`
 		IsLink      bool   `json:"is_link"`
 		LinkTarget  string `json:"link_target"`
+		ModTime     int64  `json:"mod_time"`
 	}
 	type R struct {
 		Items []Item `json:"items"`
@@ -49,6 +50,7 @@ func Dirs(pb []byte) ([]byte, error) {
 
 			lsinfo, err := os.Lstat(fullPath)
 			if err == nil {
+				item.ModTime = lsinfo.ModTime().Unix()
 				item.Permissions = uint32(lsinfo.Mode())
 				item.Size = lsinfo.Size()
 

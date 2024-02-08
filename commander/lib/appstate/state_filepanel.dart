@@ -68,6 +68,8 @@ class StateFilePanel {
         item.isLink = it['is_link'];
         item.linkTarget = it['link_target'];
         item.panelIndex = panelIndex;
+        item.modTime =
+            DateTime.fromMillisecondsSinceEpoch(it['mod_time'] * 1000);
         if (item.isDir) {
           items.add(item);
         }
@@ -82,6 +84,8 @@ class StateFilePanel {
         item.isLink = it['is_link'];
         item.linkTarget = it['link_target'];
         item.panelIndex = panelIndex;
+        item.modTime =
+            DateTime.fromMillisecondsSinceEpoch(it['mod_time'] * 1000);
         if (!item.isDir) {
           items.add(item);
         }

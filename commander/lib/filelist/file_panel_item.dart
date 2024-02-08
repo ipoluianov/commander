@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:commander/appstate/state_filepanel_item.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../appstate/state_app.dart';
 
@@ -85,7 +86,7 @@ class FilelistItemState extends State<FilelistItem> {
     return TextField(
       focusNode: focusNode,
       controller: renameController,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.transparent,
@@ -138,6 +139,7 @@ class FilelistItemState extends State<FilelistItem> {
     String sizeString = "";
     String permissionsString = "";
     String owner = "";
+    String modTime = "";
     if (widget.item.isDir) {
       text = '[${widget.item.fileName}]';
       sizeString = '[DIR]';
@@ -150,6 +152,8 @@ class FilelistItemState extends State<FilelistItem> {
       owner = owner.substring(0, 11);
       owner += "...";
     }
+
+    modTime = DateFormat('yyyy-MM-dd HH:mm').format(widget.item.modTime);
 
     //text = widget.key.toString();
 
@@ -235,14 +239,6 @@ class FilelistItemState extends State<FilelistItem> {
                           sizeString,
                           style: const TextStyle(
                             overflow: TextOverflow.ellipsis,
-                            fontSize: 10,
-                          ),
-                        ),
-                        Text(
-                          widget.item.linkTarget,
-                          style: const TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 10,
                           ),
                         ),
                       ],
@@ -255,16 +251,15 @@ class FilelistItemState extends State<FilelistItem> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        "",
+                        modTime,
                         style: const TextStyle(
                           fontSize: 10,
-                          overflow: TextOverflow.ellipsis,
                           color: Colors.white30,
                         ),
                       ),
                       Text(
                         permissionsString,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 10,
                           color: Colors.white30,
                         ),
