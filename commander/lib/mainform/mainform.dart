@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import '../appstate/state_app.dart';
 import '../command_line/command_line.dart';
 import '../filelist/file_panel.dart';
+import '../filelist_header/filelist_header.dart';
 
 class MainForm extends StatefulWidget {
   const MainForm({super.key});
@@ -63,30 +64,6 @@ class MainFormState extends State<MainForm> {
       onKey: (node, event) {
         if (processedLastKey) return KeyEventResult.handled;
         return KeyEventResult.ignored;
-
-        print("onKey ${event.logicalKey}");
-        if (StateApp().isRenameFieldActivated()) {
-          if (event.logicalKey == LogicalKeyboardKey.escape) {
-            focusNode.requestFocus();
-            return KeyEventResult.handled;
-          }
-          return KeyEventResult.ignored;
-        }
-        if (StateApp().isCommandLineActivated()) {
-          if (event.logicalKey == LogicalKeyboardKey.escape) {
-            focusNode.requestFocus();
-            StateApp().requestClearCommandLine();
-            return KeyEventResult.handled;
-          }
-          Set<LogicalKeyboardKey> notAllowedForCommandLine = {};
-          notAllowedForCommandLine.add(LogicalKeyboardKey.arrowUp);
-          notAllowedForCommandLine.add(LogicalKeyboardKey.arrowDown);
-          if (notAllowedForCommandLine.contains(event.logicalKey)) {
-            return KeyEventResult.handled;
-          }
-          return KeyEventResult.ignored;
-        }
-        return KeyEventResult.handled;
       },
       child: Column(
         children: [
@@ -97,6 +74,9 @@ class MainFormState extends State<MainForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      FileListHeader(
+                        panelIndex: 0,
+                      ),
                       Expanded(
                         child: FilePanel(
                           panelIndex: 0,
@@ -112,6 +92,9 @@ class MainFormState extends State<MainForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      const FileListHeader(
+                        panelIndex: 1,
+                      ),
                       Expanded(
                         child: FilePanel(
                           panelIndex: 1,

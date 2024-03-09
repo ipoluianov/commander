@@ -156,7 +156,7 @@ class FilePanelState extends State<FilePanel> {
 
   @override
   Widget build(BuildContext context) {
-    heightOfEachItem = 36;
+    heightOfEachItem = 28;
     return Stack(
       children: [
         buildFileList(context),

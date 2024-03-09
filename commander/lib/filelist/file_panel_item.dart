@@ -134,15 +134,16 @@ class FilelistItemState extends State<FilelistItem> {
 
   @override
   Widget build(BuildContext context) {
-    String text = widget.item.getFileNameWithoutExtension();
-    String ext = widget.item.getFileExtension();
+    String fileNameWithoutExt = widget.item.getFileNameWithoutExtension();
+    String fileExt = widget.item.getFileExtension();
     String sizeString = "";
     String permissionsString = "";
     String owner = "";
     String modTime = "";
     if (widget.item.isDir) {
-      text = '[${widget.item.fileName}]';
+      fileNameWithoutExt = '[${widget.item.fileName}]';
       sizeString = '[DIR]';
+      fileExt = "";
     } else {
       sizeString = widget.item.size.toString();
     }
@@ -184,7 +185,7 @@ class FilelistItemState extends State<FilelistItem> {
           widget.onDoubleTap(widget.index);
         },
         child: Container(
-          padding: const EdgeInsets.all(3),
+          padding: const EdgeInsets.all(1),
           decoration: BoxDecoration(
             color: widget.selected ? Colors.white24 : Colors.transparent,
             border: const Border(
@@ -193,12 +194,13 @@ class FilelistItemState extends State<FilelistItem> {
           child: DefaultTextStyle(
             style: const TextStyle(
               fontFamily: 'RobotoMono',
-              fontSize: 18,
+              fontSize: 14,
             ),
             child: Row(
               children: [
                 Expanded(
-                  child: buildFileNameWidget(context, color, text),
+                  child:
+                      buildFileNameWidget(context, color, fileNameWithoutExt),
                 ),
                 Container(
                   padding: const EdgeInsets.only(left: 10),
@@ -213,7 +215,7 @@ class FilelistItemState extends State<FilelistItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          ext,
+                          fileExt,
                           style: const TextStyle(
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -250,17 +252,17 @@ class FilelistItemState extends State<FilelistItem> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
+                      /*Text(
                         modTime,
                         style: const TextStyle(
                           fontSize: 10,
                           color: Colors.white30,
                         ),
-                      ),
+                      ),*/
                       Text(
                         permissionsString,
                         style: const TextStyle(
-                          fontSize: 10,
+                          fontSize: 12,
                           color: Colors.white30,
                         ),
                       ),
